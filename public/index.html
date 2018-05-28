@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Auto Nature</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.js"></script>
+	<script type="text/javascript" src="script.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+</head>
+
+<body>
+	<div style='width: 75%;'>
+		<canvas id="myChart" width="400px" height="100px"></canvas>
+	</div>
+	<script>
+		socket.on('diagram', function (data) {
+			var grassesLabel = Object.keys(data.grassesStat);
+			var grassesData = [];
+			var wolvesData = [];
+			var sheepsData = [];
+			for (i = 0; i < Object.keys(data.grassesStat).length; i++) {
+				grassesData.push((Object.keys(data.grassesStat[i]).map(function (o) { return data.grassesStat[i][o] }))[0]);
+			}
+			for (i = 0; i < Object.keys(data.wolvesStat).length; i++) {
+				wolvesData.push((Object.keys(data.wolvesStat[i]).map(function (o) { return data.wolvesStat[i][o] }))[0]);
+			}
+			for (i = 0; i < Object.keys(data.sheepsStat).length; i++) {
+				sheepsData.push((Object.keys(data.sheepsStat[i]).map(function (o) { return data.sheepsStat[i][o] }))[0]);
+			}
+			var ctx = document.getElementById("myChart").getContext('2d');
+			var myChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: grassesLabel,
+					datasets: [{
+						label: 'Grasses statistics',
+						backgroundColor: 'rgba(0, 235, 0, 0.2)',
+						borderColor: 'rgb(0, 255, 0)',
+						data: grassesData
+					}, {
+						label: 'Wolves statistics',
+						backgroundColor: 'rgba(103, 103, 103, 0.2)',
+						borderColor: 'rgb(128, 128, 128)',
+						data: wolvesData
+					}, {
+						label: 'Sheeps statistics',
+						backgroundColor: 'rgba(235, 235, 0, 0.2)',
+						borderColor: 'rgb(255, 255, 0)',
+						data: sheepsData
+					}]
+				},
+				options: {}
+			});
+		});
+	</script>
+</body>
+
+</html>
